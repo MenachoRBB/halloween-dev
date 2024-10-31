@@ -1,33 +1,29 @@
 function findSafestPath(dream) {
-    // Recorrer todos los caminos posibles y quedarse con el menos peligroso
-    // Solo te puedes mover hacia la derecha (i + 1) o hacia abajo (j + 1)
-    
-    const f = dream.length-1 
-    const c = dream.length-1 
+  const rows = dream.length;
+  const cols = dream[0].length;
 
-    console.log("inicio "+dream[0][0])
-    console.log("final "+dream[f][c])
+  const danger = Array.from({ length: rows }, () => Array(cols).fill(Infinity));
+  danger[0][0] = dream[0][0];
 
-
-
-
-
-
-
-    return 0
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (i > 0) {
+        danger[i][j] = Math.min(danger[i][j], danger[i - 1][j] + dream[i][j]);
+      }
+      if (j > 0) {
+        danger[i][j] = Math.min(danger[i][j], danger[i][j - 1] + dream[i][j]);
+      }
+    }
   }
 
-  const dream = [
-    [1, 3, 1],
-    [1, 5, 1],
-    [4, 2, 1]
-  ]
+  return danger[rows - 1][cols - 1];
+}
 
-  console.log(findSafestPath(dream))
+const dream = [
+  [1, 3, 1],
+  [1, 5, 1],
+  [4, 2, 1]
+];
 
-  /* 
-  1 0
-  0 1
-  
-  
-  */
+const bestPath = findSafestPath(dream);
+console.log(bestPath); // Debería devolver 7
