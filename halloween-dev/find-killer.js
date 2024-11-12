@@ -23,47 +23,50 @@ Hay que tener que el susurro whisper tiene algunas reglas:
 Las mayúsculas y minúsculas de las letras no importan.
 */
 
-//Fallan tests
 function findTheKiller(whisper, suspects) {
-   let result = [];
+    let result = [];
 
-   for (let i = 0; i < suspects.length; i++) {
-       let suspect = suspects[i];
-       let match = true;
+    // Calcula la longitud relevante del whisper, ignorando el '$' si está presente
+    let whisperLength = whisper.endsWith('$') ? whisper.length - 1 : whisper.length;
 
-       // Verifica cada carácter en el whisper
-       for (let j = 0; j < whisper.length; j++) {
-           if (whisper.charAt(j) === '~') {
-               // '~' permite cualquier letra, continúa
-               continue;
-           } 
-           if (j >= suspect.length || whisper.toLowerCase().charAt(j) !== suspect.toLowerCase().charAt(j)) {
-               // Si se sale del rango del sospechoso o los caracteres no coinciden, no es un match
-               match = false;
-               break;
-           }
-       }
+    for (let i = 0; i < suspects.length; i++) {
+        let suspect = suspects[i];
+        let match = true;
 
-       // Condición para cuando whisper termina en '$'
-       if (match && whisper.endsWith('$') && suspect.length !== whisper.length - 1) {
-           match = false;
-       }
+        // Verifica cada carácter en el whisper
+        for (let j = 0; j < whisperLength; j++) {
+            if (whisper.charAt(j) === '~') {
+                // '~' permite cualquier letra, continúa
+                continue;
+            } 
+            if (j >= suspect.length || whisper.toLowerCase().charAt(j) !== suspect.toLowerCase().charAt(j)) {
+                // Si se sale del rango del sospechoso o los caracteres no coinciden, no es un match
+                match = false;
+                break;
+            }
+        }
 
-       // Agrega el sospechoso a los resultados si coincide
-       if (match) {
-           result.push(suspect);
-       }
-   }
+        // Si `whisper` termina en `$`, verifica que el nombre del sospechoso tenga exactamente `whisperLength`
+        if (match && whisper.endsWith('$') && suspect.length !== whisperLength) {
+            match = false;
+        }
 
-   // Devuelve el resultado según el número de coincidencias
-   if (result.length === 1) {
-       return result[0];
-   } else if (result.length > 1) {
-       return result.join(',');
-   } else {
-       return '';
-   }
+        // Agrega el sospechoso a los resultados si coincide
+        if (match) {
+            result.push(suspect);
+        }
+    }
+
+    // Devuelve el resultado según el número de coincidencias
+    if (result.length === 1) {
+        return result[0];
+    } else if (result.length > 1) {
+        return result.join(',');
+    } else {
+        return '';
+    }
 }
+
 
 
 
@@ -75,6 +78,7 @@ console.log(findTheKiller(whisper, suspects)) // -> 'Dracula'
 
 const whisper2 = '~r~dd~';
 const suspects2 = ['Freddy', 'Freddier', 'Fredderic']
+
 console.log("2: ")
 console.log(findTheKiller(whisper2, suspects2)) // -> 'Freddy,Freddier,Fredderic'
 
